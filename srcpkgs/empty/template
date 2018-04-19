@@ -1,0 +1,20 @@
+# Template file for 'empty'
+pkgname=empty
+version=0.6.20b
+revision=1
+build_style=gnu-makefile
+short_desc="Run processes under pseudeo-terminal. TCL/Expect replacement"
+maintainer="stb <stb1010101b@mailbox.org>"
+license="BSD-3-Clause"
+homepage="http://empty.sourceforge.net"
+distfiles="https://sourceforge.net/projects/${pkgname}/files/${pkgname}/${pkgname}-${version}/${pkgname}-${version}.tgz"
+checksum=7e6636e400856984c4405ce7bd0843aaa3329fa3efd20c58df8400a9eaa35f09
+
+do_install() {
+	vbin empty
+	vman empty.1
+}
+
+post_install() {
+	vlicense COPYRIGHT
+}
