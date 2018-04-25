@@ -1,0 +1,6 @@
+case "${ACTION}" in
+post)
+	mono --aot -O=all usr/share/keepass/KeePass.exe 1>/dev/null 2>&1
+	[ -d usr/share/keepass/Plugins ] || mkdir usr/share/keepass/Plugins
+	;;
+esac

@@ -1,0 +1,9 @@
+case "${ACTION}" in
+post)
+	rm -f usr/share/keepass/KeePass.exe.so
+	rmdir --ignore-fail-on-non-empty usr/share/keepass/Plugins usr/share/keepass 2>/dev/null
+	;;
+purge)
+	rm -rf usr/share/keepass
+	;;
+esac

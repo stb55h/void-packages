@@ -1,0 +1,50 @@
+# Template file for 'keepass'
+# Based on the archlinux keepass package
+pkgname=keepass
+version=2.39.1
+revision=1
+only_for_archs="i686 x86_64"
+hostmakedepends="unzip desktop-file-utils icoutils"
+makedepends="mono-devel libgdiplus-devel"
+depends="mono libgdiplus"
+short_desc="A cross-platform password manager"
+maintainer="stb <stb1010101b@mailbox.org>"
+license="GPL-2.0-or-later"
+homepage="https://keepass.info/"
+distfiles="${SOURCEFORGE_SITE}/keepass/KeePass-${version}-Source.zip>${pkgname}-${version}.zip"
+checksum=00a8a97ec5fa18db558a9be131435fd2cebce2327c89616cee47e2fe7fe2c978
+
+do_extract() {
+	unzip ${XBPS_SRCDISTDIR}/${pkgname}-${version}/${pkgname}-${version}.zip -d ${wrksrc}
+	icotool -x -o ${wrksrc} ${wrksrc}/KeePass/KeePass.ico
+}
+
+do_build() {
+	pushd Build #PrepMonoDev.sh expects to be run from its directory
+	sh -e PrepMonoDev.sh
+	popd
+	xbuild /target:KeePass /property:Configuration=Release
+}
+
+do_install() {
+	vinstall Build/KeePass/Release/KeePass.exe 0644 /usr/share/keepass
+	vinstall Ext/KeePass.config.xml 0644 /usr/share/keepass
+	vinstall Ext/KeePass.exe.config 0644 /usr/share/keepass
+	vcopy Ext/XSL /usr/share/keepass/XSL
+
+	vbin ${FILESDIR}/keepass
+	vman ${FILESDIR}/keepass.1
+	vinstall ${FILESDIR}/keepass.xml 0644 /usr/share/mime/packages
+
+	# icons
+	for size in 16 32 48 256; do
+		f=$(find . -name "KeePass_*_${size}x${size}x32.png")
+		if [ -n "${f}" ]; then
+			vinstall ${f} 0644 /usr/share/icons/hicolor/${size}x${size}/apps keepass.png
+		fi
+	done
+}
+
+post_install() {
+	desktop-file-install -m 0644 --dir="${DESTDIR}/usr/share/applications" ${FILESDIR}/keepass.desktop
+}
